@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Sign Up</h1>
+    <form action="{% url 'core:register' %}" method="post">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+        {% endfor %}
+
+        <button type="submit">Sign Up</button>
+        <a href="{% url 'core:list' %}" class="btn btn-default">Cancel</a>
+    </form>
+    <a href="{% url 'core:login' %}">Sing In</a>
+</body>
+</html>

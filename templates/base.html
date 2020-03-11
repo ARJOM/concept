@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Base</title>
+</head>
+<body>
+    <h1>Concept - The Game</h1>
+    {% if user.is_authenticate %}
+        <a href="{% url 'core:logout' %}">Log Out</a>
+    {% else %}
+        <a href="{% url 'core:login' %}">Log In</a>
+    {% endif %}
+     <div class="content-wrapper">
+         {% block content %}
+         {% endblock %}
+     </div>
+</body>
+</html>

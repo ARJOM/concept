@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form action="{% url 'core:login' %}" method="post">
+        {% csrf_token %}
+        <input name="username" type="text" placeholder="User">
+        <input name="password" type="password" class="form-control" placeholder="Password">
+        <button type="submit">Sign In</button>
+    </form>
+</body>
+</html>
