@@ -12,9 +12,6 @@
     {% else %}
         <a href="{% url 'core:login' %}">Log In</a>
     {% endif %}
-    {% if user %}
-        <a href="{% url 'core:detail' user.id %}">Minha conta</a>
-    {% endif %}
      <div class="content-wrapper">
          {% block content %}
          {% endblock %}
