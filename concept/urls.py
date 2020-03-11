@@ -20,5 +20,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # core
-    path('', include('app.core.urls'), name='core')
+    path('', include('app.core.urls'), name='core'),
+
+    # game
+    path('', include('app.game.urls'), name='game')
 ]
