@@ -17,6 +17,10 @@ class ConceptsView(ListView):
             return redirect('core:dashboard')
         return super().get(request, *args, **kwargs)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        kwargs['object_list'] = Concept.objects.filter(active=True)
+        return super(ConceptsView, self).get_context_data(**kwargs)
+
 
 # Concept create
 # - - - - - - - - - - - - - - - - - - - -
@@ -52,5 +56,6 @@ def concept_delete_view(request, pk):
     if not request.user.is_staff:
         return redirect('core:dashboard')
     concept = Concept.objects.get(id=pk)
-    concept.delete()
+    concept.active = False
+    concept.save()
     return redirect('game:concept-list')

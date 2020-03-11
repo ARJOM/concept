@@ -11,6 +11,7 @@ class CreateUpdateModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField('criado em', auto_now_add=True)
     updated_at = models.DateTimeField('atualizado em', auto_now=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
@@ -21,6 +22,7 @@ class CreateUpdateModel(models.Model):
 class UUIDUser(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='uuiduser_set', related_query_name='user')
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.username

@@ -23,6 +23,10 @@ class UsersView(ListView):
             return redirect('core:dashboard')
         return super().get(request, *args, **kwargs)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        kwargs['object_list'] = UUIDUser.objects.filter(active=True)
+        return super(UsersView, self).get_context_data(**kwargs)
+
 
 # User create
 # - - - - - - - - - - - - - - - - - - - -
@@ -65,5 +69,6 @@ def user_delete_view(request, pk):
     if not request.user.is_staff and request.user.id != pk:
         return redirect('core:dashboard')
     user = UUIDUser.objects.get(id=pk)
-    user.delete()
+    user.active = False
+    user.save()
     return redirect('core:dashboard')
