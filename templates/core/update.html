@@ -24,7 +24,7 @@
         {{ form.password }}
 
         <button type="submit">Update</button>
-        <a href="{% url 'core:list' %}">Cancel</a>
+        <a href="{% url 'core:detail' object.id %}">Cancel</a>
         <a href="{% url 'core:delete' object.id %}">Delete</a>
     </form>
 </body>
