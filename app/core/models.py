@@ -26,5 +26,5 @@ class UUIDUser(AbstractUser):
         return self.username
 
     class Meta:
-        verbose_name = 'usuário'
-        verbose_name_plural = 'usuários'
+        verbose_name = 'user'
+        verbose_name_plural = 'users'
