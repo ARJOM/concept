@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from .models import UUIDUser
-
+from .forms import UUIDUserForm
 
 # User list
 # - - - - - - - - - - - - - - - - - - - -
@@ -17,7 +17,7 @@ class UserCreateView(CreateView):
     model = UUIDUser
     template_name = 'core/form.html'
     success_url = reverse_lazy('core:login')
-    fields = ['username', 'email', 'password']
+    form_class = UUIDUserForm
 
 
 # User edit

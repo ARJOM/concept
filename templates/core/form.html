@@ -14,13 +14,14 @@
             {{ hidden }}
         {% endfor %}
 
-        {% for field in form.visible_fields %}
-            <label>{{ field.label }}</label>
-            {{ field }}
-            {% for error in field.errors %}
-              <span>{{ error }}</span>
-            {% endfor %}
-        {% endfor %}
+        <label>{{ form.username.label }}</label>
+        {{ form.username }}
+
+        <label>{{ form.email.label }}</label>
+        {{ form.email }}
+
+        <label>{{ form.password.label }}</label>
+        {{ form.password }}
 
         <button type="submit">Sign Up</button>
         <a href="{% url 'core:list' %}" class="btn btn-default">Cancel</a>

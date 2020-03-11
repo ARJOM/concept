@@ -5,6 +5,7 @@ from .models import UUIDUser
 
 # User: create
 class UUIDUserForm(forms.ModelForm):
+    password = forms.CharField(max_length=32, widget=forms.PasswordInput)
 
     def save(self, commit=True):
         user = super(UUIDUserForm, self).save(commit=False)
@@ -15,11 +16,10 @@ class UUIDUserForm(forms.ModelForm):
 
     class Meta:
         model = UUIDUser
+        form = forms.ModelForm
         fields = ('username', 'email', 'password')
         labels = {
             'username': 'Login',
             'email': 'Email',
-        }
-        widgets = {
-            'password': forms.PasswordInput()
+            'password': 'Password',
         }
