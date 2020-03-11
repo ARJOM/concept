@@ -25,7 +25,11 @@
 
         <button type="submit">Update</button>
         <a href="{% url 'core:detail' object.id %}">Cancel</a>
-        <a href="{% url 'core:delete' object.id %}">Delete</a>
+        {% if object.active %}
+            <a href="{% url 'core:delete' object.id %}">Delete</a>
+        {% else %}
+            <a href="{% url 'core:activate' object.id %}">Activate</a>
+        {% endif %}
     </form>
 </body>
 </html>

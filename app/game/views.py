@@ -19,7 +19,24 @@ class ConceptsView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         kwargs['object_list'] = Concept.objects.filter(active=True)
+        kwargs['type'] = "Active"
         return super(ConceptsView, self).get_context_data(**kwargs)
+
+
+# Concept deleted list
+class ConceptsDeletedView(ListView):
+    model = Concept
+    template_name = 'game/concept/list.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return redirect('core:dashboard')
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        kwargs['object_list'] = Concept.objects.filter(active=False)
+        kwargs['type'] = "Inactive"
+        return super(ConceptsDeletedView, self).get_context_data(**kwargs)
 
 
 # Concept create
@@ -57,5 +74,16 @@ def concept_delete_view(request, pk):
         return redirect('core:dashboard')
     concept = Concept.objects.get(id=pk)
     concept.active = False
+    concept.save()
+    return redirect('game:concept-list')
+
+
+# Concept activate
+# - - - - - - - - - - - - - - - - - - - -
+def concept_activate_view(request, pk):
+    if not request.user.is_staff:
+        return redirect('core:dashboard')
+    concept = Concept.objects.get(id=pk)
+    concept.active = True
     concept.save()
     return redirect('game:concept-list')

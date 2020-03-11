@@ -17,7 +17,11 @@
 
         <button type="submit">Update</button>
         <a href="{% url 'game:concept-list' %}" class="btn btn-default">Cancel</a>
-        <a href="{% url 'game:concept-delete' object.id %}">Delete</a>
+        {% if object.active %}
+            <a href="{% url 'game:concept-delete' object.id %}">Delete</a>
+        {% else %}
+            <a href="{% url 'game:concept-activate' object.id %}">Activate</a>
+        {% endif %}
     </form>
 
 {% endblock %}

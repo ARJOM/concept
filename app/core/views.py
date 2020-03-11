@@ -25,7 +25,24 @@ class UsersView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         kwargs['object_list'] = UUIDUser.objects.filter(active=True)
+        kwargs['type'] = "Active"
         return super(UsersView, self).get_context_data(**kwargs)
+
+
+# User deleted list
+class UsersDeletedView(ListView):
+    model = UUIDUser
+    template_name = 'core/list.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return redirect('core:dashboard')
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        kwargs['object_list'] = UUIDUser.objects.filter(active=False)
+        kwargs['type'] = "Inactive"
+        return super(UsersDeletedView, self).get_context_data(**kwargs)
 
 
 # User create
@@ -70,5 +87,16 @@ def user_delete_view(request, pk):
         return redirect('core:dashboard')
     user = UUIDUser.objects.get(id=pk)
     user.active = False
+    user.save()
+    return redirect('core:dashboard')
+
+
+# User active
+# - - - - - - - - - - - - - - - - - - - -
+def user_active_view(request, pk):
+    if not request.user.is_staff and request.user.id != pk:
+        return redirect('core:dashboard')
+    user = UUIDUser.objects.get(id=pk)
+    user.active = True
     user.save()
     return redirect('core:dashboard')
