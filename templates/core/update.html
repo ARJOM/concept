@@ -6,7 +6,7 @@
     <title>Login</title>
 </head>
 <body>
-    <h1>Sign Up</h1>
+    <h1>Update</h1>
     <form method="post">
         {% csrf_token %}
 
@@ -14,17 +14,18 @@
             {{ hidden }}
         {% endfor %}
 
-        {% for field in form.visible_fields %}
-            <label>{{ field.label }}</label>
-            {{ field }}
-            {% for error in field.errors %}
-              <span>{{ error }}</span>
-            {% endfor %}
-        {% endfor %}
+        <label>{{ form.username.label }}</label>
+        {{ form.username }}
 
-        <button type="submit">Sign Up</button>
-        <a href="{% url 'core:list' %}" class="btn btn-default">Cancel</a>
+        <label>{{ form.email.label }}</label>
+        {{ form.email }}
+
+        <label>New {{ form.password.label }}</label>
+        {{ form.password }}
+
+        <button type="submit">Update</button>
+        <a href="{% url 'core:list' %}">Cancel</a>
+        <a href="{% url 'core:delete' object.id %}">Delete</a>
     </form>
-    <a href="{% url 'core:login' %}">Sing In</a>
 </body>
 </html>

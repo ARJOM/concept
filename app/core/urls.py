@@ -13,9 +13,13 @@ urlpatterns = [
     # https://docs.djangoproject.com/en/2.0/topics/auth/default/#django.contrib.auth.views.LogoutView
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
+    # Dashboard
+    path('', views.DashboardView.as_view(), name='dashboard'),
+
     # Users
-    path('user/new', views.UserCreateView.as_view(), name='register'),
     path('users/', views.UsersView.as_view(), name='list'),
+    path('user/new', views.UserCreateView.as_view(), name='register'),
+    path('user/<uuid:pk>', views.UserDetailView.as_view(), name='detail'),
     path('user/<uuid:pk>/edit', views.UserEditView.as_view(), name='edit'),
-    path('user/<uuid:pk>', views.UserDetailView.as_view(), name='detail')
+    path('user/<uuid:pk>/delete', views.user_delete_view, name='delete'),
 ]
