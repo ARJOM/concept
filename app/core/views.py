@@ -30,14 +30,7 @@ class UsersView(ListView):
 
 
 # User deleted list
-class UsersDeletedView(ListView):
-    model = UUIDUser
-    template_name = 'core/list.html'
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return redirect('core:dashboard')
-        return super().get(request, *args, **kwargs)
+class UsersDeletedView(UsersView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         kwargs['object_list'] = UUIDUser.objects.filter(active=False)

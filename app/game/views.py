@@ -24,14 +24,7 @@ class ConceptsView(ListView):
 
 
 # Concept deleted list
-class ConceptsDeletedView(ListView):
-    model = Concept
-    template_name = 'game/concept/list.html'
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return redirect('core:dashboard')
-        return super().get(request, *args, **kwargs)
+class ConceptsDeletedView(ConceptsView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         kwargs['object_list'] = Concept.objects.filter(active=False)
@@ -108,14 +101,7 @@ class ItemsView(ListView):
 
 # Items deleted list
 # - - - - - - - - - - - - - - - - - - - -
-class ItemsDeletedView(ListView):
-    model = Item
-    template_name = 'game/item/list.html'
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return redirect('core:dashboard')
-        return super().get(request, *args, **kwargs)
+class ItemsDeletedView(ItemsView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         kwargs['object_list'] = Item.objects.filter(active=False)
