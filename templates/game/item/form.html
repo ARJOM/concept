@@ -1,0 +1,30 @@
+{% extends '../../base.html' %}
+
+{% block title %}New Item{% endblock %}
+
+{% block content %}
+
+    <h1>New Item</h1>
+    <form action="{% url 'game:item-register' %}" method="post">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <label>{{ form.name.label }}</label>
+        {{ form.name }}
+
+        <br/>
+
+        {% for concept in concepts %}
+            <input type="checkbox" id="{{ concept.id }}" name="{{ concept.name }}" value="{{ concept.id }}">
+            <label for="{{ concept.name }}"> {{ concept.name }}</label><br>
+        {% endfor %}
+
+
+        <button type="submit">Register</button>
+        <a href="{% url 'game:item-list' %}" class="btn btn-default">Cancel</a>
+    </form>
+
+{% endblock %}

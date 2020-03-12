@@ -1,0 +1,37 @@
+{% extends '../../base.html' %}
+
+{% block title %}New Item{% endblock %}
+
+{% block content %}
+
+    <h1>New Item</h1>
+    <form action="{% url 'game:item-register' %}" method="post">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <label>{{ form.name.label }}</label>
+        {{ form.name }}
+
+        <br/>
+        {% for concept in concepts %}
+            {% if concept in marked %}
+                <input type="checkbox" id="{{ concept.id }}" name="{{ concept.name }}" value="{{ concept.id }}" checked>
+            {% else %}
+                <input type="checkbox" id="{{ concept.id }}" name="{{ concept.name }}" value="{{ concept.id }}">
+            {% endif %}
+            <label for="{{ concept.name }}"> {{ concept.name }}</label><br>
+        {% endfor %}
+
+        <button type="submit">Update</button>
+        <a href="{% url 'game:item-list' %}" class="btn btn-default">Cancel</a>
+        {% if object.active %}
+            <a href="{% url 'game:item-delete' object.id %}">Delete</a>
+        {% else %}
+            <a href="{% url 'game:item-activate' object.id %}">Activate</a>
+        {% endif %}
+    </form>
+
+{% endblock %}
