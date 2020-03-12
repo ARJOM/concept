@@ -5,7 +5,7 @@
 {% block content %}
 
     <h1>New Item</h1>
-    <form action="{% url 'game:item-register' %}" method="post">
+    <form action="{% url 'game:item-edit' object.id %}" method="post">
         {% csrf_token %}
 
         {% for hidden in form.hidden_fields %}

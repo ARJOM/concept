@@ -167,8 +167,6 @@ class ItemEditView(UpdateView):
     success_url = reverse_lazy('game:item-list')
     fields = ['name', 'concepts']
 
-    # TODO fix item update
-
     def get(self, request, *args, **kwargs):
         if not request.user.is_staff:
             return redirect('core:dashboard')
@@ -178,6 +176,24 @@ class ItemEditView(UpdateView):
         kwargs['concepts'] = Concept.objects.all()
         kwargs['marked'] = Item.objects.get(id=self.object.id).concepts.filter()
         return super(ItemEditView, self).get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+        item = self.get_object()
+        if item.name != request.POST.get('name'):
+            item.name = request.POST.get('name')
+            item.save()
+        # Going through concepts and checking if they are marked
+        concepts = []
+        for concept in Concept.objects.all():
+            con = request.POST.get(concept.name)
+            if con is not None:
+                c = Concept.objects.get(id=con)
+                c.save()
+                concepts.append(c)
+        # Setting concepts in Item instance
+        item.concepts.set(concepts)
+        item.save()
+        return redirect('game:item-list')
 
 
 # Concept delete
