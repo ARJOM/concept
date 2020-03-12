@@ -1,0 +1,24 @@
+{% extends '../../base.html' %}
+
+{% block content %}
+    <h1>{{ type }} Users</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Game</th>
+            <th>Progress</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for obj in object_list %}
+            <tr>
+                <td><a href="#">Game {{ forloop.counter }}</a></td>
+                <td>{{ obj.correct }}/{{ obj.total }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td rowspan="2"><a href="{% url 'game:game-register' %}">New Game</a></td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}

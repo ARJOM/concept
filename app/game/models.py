@@ -37,9 +37,12 @@ class Game(CreateUpdateModel):
 
     player = models.ForeignKey(UUIDUser, on_delete=models.CASCADE)
     items = models.ManyToManyField(Item, related_name='items')
+    concluded = models.BooleanField(default=False)
+    correct = models.IntegerField(default=0)
+    total = models.IntegerField(default=10)
 
     def __str__(self):
-        return self.player
+        return self.player.username
 
     class Meta:
         verbose_name = 'game'

@@ -20,4 +20,8 @@ urlpatterns = [
     path('item/<uuid:pk>/edit', views.ItemEditView.as_view(), name='item-edit'),
     path('item/<uuid:pk>/delete', views.item_delete_view, name='item-delete'),
     path('item/<uuid:pk>/activate', views.item_activate_view, name='item-activate'),
+
+    # Game
+    path('games/', views.GamesView.as_view(), name='game-list'),
+    path('game/new/', views.GameCreateView.as_view(), name='game-register')
 ]

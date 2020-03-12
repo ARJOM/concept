@@ -5,6 +5,8 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from .models import Concept, Item, Game
 
+import random
+
 
 # Concept list
 # - - - - - - - - - - - - - - - - - - - -
@@ -202,3 +204,76 @@ def item_activate_view(request, pk):
     item.active = True
     item.save()
     return redirect('game:item-list')
+
+
+# Games list
+# - - - - - - - - - - - - - - - - - - - -
+class GamesView(ListView):
+    model = Game
+    template_name = 'game/game/list.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('core:dashboard')
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        kwargs['object_list'] = Game.objects.filter(player=self.request.user, active=True)
+        kwargs['type'] = "Active"
+        return super(GamesView, self).get_context_data(**kwargs)
+
+
+# Game create
+# - - - - - - - - - - - - - - - - - - - -
+class GameCreateView(CreateView):
+    model = Game
+    success_url = reverse_lazy('game:item-list')
+    template_name = 'game/game/form.html'
+    fields = ['total']
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('core:dashboard')
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        game = Game()
+        game.player = request.user
+        game.total = int(request.POST.get('total'))
+        game.save()
+
+        # Getting items from user games
+        games = Game.objects.filter(player=request.user.id)
+        player_items = []
+        for g in games:
+            print(g)
+            for item in g.items.all():
+                print(item)
+                i = item
+                i.save()
+                player_items.append(i)
+
+        # Getting possible items from the game
+        items = Item.objects.all()
+        game_items = []
+        for item in items:
+            if item not in player_items:
+                i = item
+                i.save()
+                game_items.append(i)
+
+        if len(game_items) < game.total:
+            game.delete()
+            return redirect('game:game-list')
+
+        # Getting items for the game
+        result = []
+        for i in range(game.total):
+            index = random.randint(0, len(game_items))
+            item = game_items.pop(index)
+            item.save()
+            result.append(item)
+
+        game.items.set(result)
+        game.save()
+        return redirect('game:game-list')
