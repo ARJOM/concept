@@ -1,0 +1,16 @@
+{% extends '../../base.html' %}
+
+{% block content %}
+    <h1>Concepts</h1>
+    <ul>
+    {% for concept in concepts %}
+        <li>{{ concept.name }}</li>
+    {% endfor %}
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        <label for="guess">Guess</label>
+        <input type="text" name="guess" placeholder="guess">
+        <input type="submit" value="Try">
+    </form>
+{% endblock %}

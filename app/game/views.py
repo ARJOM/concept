@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
@@ -268,12 +268,33 @@ class GameCreateView(CreateView):
 
         # Getting items for the game
         result = []
+        i = game.total
         for i in range(game.total):
-            index = random.randint(0, len(game_items))
+            index = random.randrange(0, len(game_items))
+            print(index)
             item = game_items.pop(index)
             item.save()
             result.append(item)
+            i -= 1
 
         game.items.set(result)
         game.save()
         return redirect('game:game-list')
+
+
+def game_play(request, pk):
+    data = {}
+    game = Game.objects.get(id=pk)
+    if request.user.id != game.player.id:
+        return redirect('game:game-list')
+    elif game.correct == game.total:
+        return redirect('game:game-list')
+    data['item'] = game.items.all()[game.correct]
+    data['concepts'] = data['item'].concepts.all()
+    if request.method == "POST":
+        guess = request.POST.get('guess')
+        if guess == data['item'].name:
+            game.correct += 1
+            game.save()
+            return redirect('game:game-play', game.id)
+    return render(request, 'game/game/game.html', data)
