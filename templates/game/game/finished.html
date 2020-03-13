@@ -1,0 +1,18 @@
+{% extends '../../base.html' %}
+
+{% block title %}Finished Games{% endblock %}
+
+{% block content %}
+    <h1>Game {{ object.player }}</h1>
+    <ul>
+        {% for item in object.items.all %}
+            <li>{{ item.name }}</li>
+            <ul>
+            {% for concept in item.concepts.all %}
+                <li>{{ concept.name }}</li>
+            {% endfor %}
+            </ul>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'game:game-finished' %}">Back to List</a>
+{% endblock %}

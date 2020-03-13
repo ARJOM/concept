@@ -2,4 +2,15 @@
 
 {% block content %}
     <h1>Bem Vindo</h1>
+    <ul>
+        <li><a href="{% url 'game:game-list' %}">Start to play</a></li>
+        <li><a href="{% url 'game:game-finished' %}">Finished Games</a></li>
+        {% if user.is_staff %}
+            <li><a href="{% url 'core:list'%}">Users</a></li>
+            <li><a href="{% url 'game:concept-list' %}">Active concepts</a></li>
+            <li><a href="{% url 'game:item-list' %}">Active items</a></li>
+            <li><a href="{% url 'game:concept-deleted' %}">Inactive concepts</a></li>
+            <li><a href="{% url 'game:item-deleted' %}">Inactive items</a></li>
+        {% endif %}
+    </ul>
 {% endblock %}

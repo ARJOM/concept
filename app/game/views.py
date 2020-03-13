@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 from .models import Concept, Item, Game
@@ -26,7 +26,14 @@ class ConceptsView(ListView):
 
 
 # Concept deleted list
-class ConceptsDeletedView(ConceptsView):
+class ConceptsDeletedView(ListView):
+    model = Concept
+    template_name = 'game/concept/list.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return redirect('core:dashboard')
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         kwargs['object_list'] = Concept.objects.filter(active=False)
@@ -103,11 +110,19 @@ class ItemsView(ListView):
 
 # Items deleted list
 # - - - - - - - - - - - - - - - - - - - -
-class ItemsDeletedView(ItemsView):
+class ItemsDeletedView(ListView):
+    model = Item
+    template_name = 'game/item/list.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return redirect('core:dashboard')
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         kwargs['object_list'] = Item.objects.filter(active=False)
         kwargs['type'] = "Inactive"
+        print(kwargs)
         return super(ItemsDeletedView, self).get_context_data(**kwargs)
 
 
@@ -219,8 +234,25 @@ class GamesView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         kwargs['object_list'] = Game.objects.filter(player=self.request.user, active=True)
-        kwargs['type'] = "Active"
+        kwargs['type'] = "Open"
         return super(GamesView, self).get_context_data(**kwargs)
+
+
+# Finished games list
+# - - - - - - - - - - - - - - - - - - - -
+class FinishedGamesView(ListView):
+    model = Game
+    template_name = 'game/game/list.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('core:dashboard')
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        kwargs['object_list'] = Game.objects.filter(player=self.request.user, active=False)
+        kwargs['type'] = "Finished"
+        return super(FinishedGamesView, self).get_context_data(**kwargs)
 
 
 # Game create
@@ -240,6 +272,8 @@ class GameCreateView(CreateView):
         game = Game()
         game.player = request.user
         game.total = int(request.POST.get('total'))
+        if game.total <= 0:
+            return redirect('game:game-list')
         game.save()
 
         # Getting items from user games
@@ -282,18 +316,34 @@ class GameCreateView(CreateView):
         return redirect('game:game-list')
 
 
+class GameDetailView(DetailView):
+    model = Game
+    template_name = 'game/game/finished.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or request.user != self.get_object().player:
+            return redirect('core:dashboard')
+        return super().get(request, *args, **kwargs)
+
+    # def get_context_data(self, **kwargs):
+    #     kwargs['']
+
+
+
 def game_play(request, pk):
     data = {}
     game = Game.objects.get(id=pk)
     if request.user.id != game.player.id:
         return redirect('game:game-list')
     elif game.correct == game.total:
-        return redirect('game:game-list')
+        game.active = False
+        game.save()
+        return redirect('game:game-detail', game.id)
     data['item'] = game.items.all()[game.correct]
     data['concepts'] = data['item'].concepts.all()
     if request.method == "POST":
         guess = request.POST.get('guess')
-        if guess == data['item'].name:
+        if guess.lower() == data['item'].name.lower():
             game.correct += 1
             game.save()
             return redirect('game:game-play', game.id)
