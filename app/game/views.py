@@ -316,6 +316,8 @@ class GameCreateView(CreateView):
         return redirect('game:game-list')
 
 
+# Game detail
+# - - - - - - - - - - - - - - - - -
 class GameDetailView(DetailView):
     model = Game
     template_name = 'game/game/finished.html'
@@ -325,11 +327,9 @@ class GameDetailView(DetailView):
             return redirect('core:dashboard')
         return super().get(request, *args, **kwargs)
 
-    # def get_context_data(self, **kwargs):
-    #     kwargs['']
 
-
-
+# Game play function
+# - - - - - - - - - - - - - - - - - - - -
 def game_play(request, pk):
     data = {}
     game = Game.objects.get(id=pk)

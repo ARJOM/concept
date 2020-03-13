@@ -1,3 +1,4 @@
+from django.contrib.auth import login, authenticate
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, TemplateView
@@ -10,6 +11,11 @@ from .forms import UUIDUserForm
 # - - - - - - - - - - - - - - - - - - - -
 class DashboardView(TemplateView):
     template_name = 'dashboard.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('core:login')
+        return super().get(request, *args, **kwargs)
 
 
 # User list
@@ -46,6 +52,18 @@ class UserCreateView(CreateView):
     success_url = reverse_lazy('core:login')
     form_class = UUIDUserForm
 
+    def post(self, request, *args, **kwargs):
+        form = UUIDUserForm(request.POST.copy())
+        if form.is_valid():
+            instance = form.save()
+            instance.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('core:dashboard')
+        return super().post(request, *args, **kwargs)
+
 
 # User edit
 # - - - - - - - - - - - - - - - - - - - -
@@ -56,9 +74,21 @@ class UserEditView(UpdateView):
     form_class = UUIDUserForm
 
     def get(self, request, *args, **kwargs):
-        if not request.user.is_staff and kwargs['pk'] != request.user.id:
+        if kwargs['pk'] != request.user.id:
             return redirect('core:dashboard')
         return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        instance = request.user
+        form = UUIDUserForm(request.POST or None, instance=instance)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('core:dashboard')
+        return super().post(request, *args, **kwargs)
 
 
 # User detail
