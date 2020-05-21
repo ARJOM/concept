@@ -31,6 +31,12 @@ pip install -r requirements.txt
 ```
 python manage.py createsuperuser
 ```
+- Perform the migrations
+```
+python manage.py makemigrations core
+python manage.py makemigrations game
+python manage.py migrate
+```
 - Run the project
 ```
 python manage.py runserver
