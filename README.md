@@ -27,15 +27,15 @@ python -m pip install --upgrade pip
 ```
 pip install -r requirements.txt
 ```
-- Create a Super User
-```
-python manage.py createsuperuser
-```
 - Perform the migrations
 ```
 python manage.py makemigrations core
 python manage.py makemigrations game
 python manage.py migrate
+```
+- Create a Super User
+```
+python manage.py createsuperuser
 ```
 - Run the project
 ```
