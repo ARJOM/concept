@@ -4,15 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'css/main.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@669&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 <body>
-    <h1>Login</h1>
-    <form action="{% url 'core:login' %}" method="post">
-        {% csrf_token %}
-        <input name="username" type="text" placeholder="User">
-        <input name="password" type="password" class="form-control" placeholder="Password">
-        <button type="submit">Sign In</button>
-    </form>
-    <a href="{% url 'core:register' %}">Sign Up</a>
+  <div class="main">
+    <div class="main-login">
+        <h1>CONCEPT</h1>
+        <form action="{% url 'core:login' %}" method="post" class="form-login">
+            {% csrf_token %}
+            <input class="input-login" name="username" type="text" placeholder="User">
+            <input class="input-login" name="password" type="password" class="form-control" placeholder="Password">
+            <button type="submit" class="btn-login">Sign In</button>
+            <a href="{% url 'core:register' %}" class="btn-register">Sign Up</a>
+        </form>
+    </div>
+  </div>
 </body>
 </html>
